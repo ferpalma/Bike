@@ -3,32 +3,40 @@ package br.unitins.bike.controller;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
+import br.unitins.bike.application.Util;
+import br.unitins.bike.model.Usuario;
+
 @Named
 @RequestScoped
 public class LoginController {
+	
+	private Usuario usuario;
 
-	private String login = "Joao";
-	private String senha = "123";
-
-	public void logar() {
-		System.out.println(login);
-		System.out.println(senha);
+	
+	public String logar() {
+		if (getUsuario().getLogin().equals("teste")
+				&& getUsuario().getSenha().equals("123")) {
+			System.out.println(getUsuario().getLogin());
+			System.out.println(getUsuario().getSenha());
+			return "hello.xhtml?faces-redirect=true";
+		}
+		Util.addMessageError("Usuário ou Senha Inválido.");
+		return null;
+	}
+	
+	public void limpar() {
+		setUsuario(new Usuario());
+//		usuario = new Usuario();
 	}
 
-	public String getLogin() {
-		return login;
+	public Usuario getUsuario() {
+		if (usuario == null)
+			usuario = new Usuario();
+		return usuario;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

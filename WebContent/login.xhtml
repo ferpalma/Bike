@@ -11,14 +11,15 @@
 	<h:form>
 		<h:panelGrid columns="2">
 			<h:outputLabel value="Usuário: " />
-			<h:inputText value="#{loginController.login}" />
+			<h:inputText value="#{loginController.usuario.login}" />
 
 			<h:outputLabel value="Senha: " />
-			<h:inputSecret value="#{loginController.senha}" />
+			<h:inputSecret value="#{loginController.usuario.senha}" />
 
 			<h:commandButton value="Logar"
-				actionListener="#{loginController.logar()}" />
-			<h:commandButton value="Limpar" />
+				action="#{loginController.logar()}" />
+			<h:commandButton value="Limpar" 
+				actionListener="#{loginController.limpar()}" />
 			
 		</h:panelGrid>
 	</h:form>
