@@ -7,6 +7,20 @@ public class Usuario {
 	private String login;
 	private String senha;
 	private Boolean ativo = Boolean.TRUE;
+	
+	
+	public Usuario() {
+		super();
+	}
+
+	public Usuario(Integer id, String nome, String login, String senha, Boolean ativo) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.login = login;
+		this.senha = senha;
+		this.ativo = ativo;
+	}
 
 	public Integer getId() {
 		return id;

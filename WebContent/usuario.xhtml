@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+	<title>Bike Shop</title>
+	<h:outputStylesheet library="css" name="table.css"/>
+</h:head>
+<h:body>
+	<h1>Cadastro de Usuário</h1>
+	<h:form>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="Nome: " />
+			<h:inputText value="#{usuarioController.usuario.nome}" />
+			<h:outputLabel value="Login: " />
+			<h:inputText value="#{usuarioController.usuario.login}" />
+			<h:outputLabel value="Senha: " />
+			<h:inputSecret value="#{usuarioController.usuario.senha}" />
+			<h:outputLabel value="Usuario ativo: " />
+			<h:selectBooleanCheckbox value="#{usuarioController.usuario.ativo}" />
+		</h:panelGrid>
+		
+		<h:panelGrid columns="4">
+			<h:commandButton value="Incluir" 
+				actionListener="#{usuarioController.incluir()}"/>
+			<h:commandButton value="Alterar" />
+			<h:commandButton value="Excluir" />
+			<h:commandButton value="Limpar" 
+				actionListener="#{usuarioController.limpar()}"/>
+		</h:panelGrid>
+		
+		<h:dataTable value="#{usuarioController.listaUsuario}" var="obj"
+				styleClass="table"
+				headerClass="table-header"
+				rowClasses="table-odd-row, table-even-row">
+			<h:column>
+				<f:facet name="header">Id</f:facet>
+				<h:outputLabel value="#{obj.id}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Nome</f:facet>
+				<h:outputLabel value="#{obj.nome}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Login</f:facet>
+				<h:outputLabel value="#{obj.login}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Senha</f:facet>
+				<h:outputLabel value="#{obj.senha}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Ativo</f:facet>
+				<h:outputLabel value="#{obj.ativo}"/>
+			</h:column>
+
+		</h:dataTable>
+		
+	</h:form>
+
+</h:body>
+</html>
