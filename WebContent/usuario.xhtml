@@ -28,7 +28,8 @@
 			<h:commandButton value="Limpar" 
 				actionListener="#{usuarioController.limpar()}"/>
 		</h:panelGrid>
-		
+	</h:form>
+	<h:form>	
 		<h:dataTable value="#{usuarioController.listaUsuario}" var="obj"
 				styleClass="table"
 				headerClass="table-header"
@@ -39,7 +40,8 @@
 			</h:column>
 			<h:column>
 				<f:facet name="header">Nome</f:facet>
-				<h:outputLabel value="#{obj.nome}"/>
+				<h:commandLink value="#{obj.nome}" 
+					actionListener="#{usuarioController.editar(obj)}"/>
 			</h:column>
 			<h:column>
 				<f:facet name="header">Login</f:facet>

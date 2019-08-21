@@ -1,18 +1,21 @@
 package br.unitins.bike.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import br.unitins.bike.model.Usuario;
 
 @Named
-@RequestScoped
+@ViewScoped
 //dontpad.com/sisunitins_topicos1_20192
-public class UsuarioController {
+public class UsuarioController implements Serializable {
 	
+	private static final long serialVersionUID = -6998638931332554108L;
+
 	private Usuario usuario;
 	
 	private List<Usuario> listaUsuario;
@@ -27,10 +30,12 @@ public class UsuarioController {
 	}
 	
 	public void incluir() {
-		System.out.println(getUsuario().getNome());
-		System.out.println(getUsuario().getLogin());
-		System.out.println(getUsuario().getSenha());
-		System.out.println(getUsuario().getAtivo());
+		getListaUsuario().add(getUsuario());
+		limpar();
+	}
+	
+	public void editar(Usuario usuario) {
+		setUsuario(usuario);
 	}
 
 	public Usuario getUsuario() {
