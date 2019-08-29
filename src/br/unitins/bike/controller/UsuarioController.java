@@ -7,6 +7,7 @@ import java.util.List;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import br.unitins.bike.application.Util;
 import br.unitins.bike.model.Usuario;
 
 @Named
@@ -30,12 +31,63 @@ public class UsuarioController implements Serializable {
 	}
 	
 	public void incluir() {
-		getListaUsuario().add(getUsuario());
+		if (validarDados()) {
+			getUsuario().setId(ultimoId() + 1);
+			getListaUsuario().add(getUsuario());
+			limpar();
+			Util.addMessageInfo("Inclusão realizada com sucesso.");
+		}
+	}
+	
+	public void alterar() {
+		if (validarDados()) {
+			int index = getListaUsuario().indexOf(getUsuario());
+			if (index == -1) {
+				Util.addMessageError("Objeto não encontrado na lista.");
+			} else {
+				getListaUsuario().set(index, getUsuario());
+				limpar();
+				Util.addMessageInfo("Alteração realizada com sucesso.");
+			}
+		}
+	}
+	
+	public void excluir() {
+		getListaUsuario().remove(getUsuario());
 		limpar();
+		Util.addMessageInfo("Exclusão realizada com sucesso.");
+	}
+	
+	public void excluir(Usuario usuario) {
+		getListaUsuario().remove(usuario);
+		limpar();
+		Util.addMessageInfo("Exclusão realizada com sucesso.");
+	}
+
+	private boolean validarDados() {
+		if (getUsuario().getSenha().isBlank()) {
+			Util.addMessageWarn("O campo senha deve ser informado.");
+			return false;
+		}
+//		if (getUsuario().getSenha() == null || 
+//				getUsuario().getSenha().trim().equals("") ) {
+//			Util.addMessageError("O campo senha deve ser informado.");
+//			return false;
+//		}
+		return true;
+	}
+	
+	private int ultimoId() {
+		int maior = 0;
+		for (Usuario usuario : listaUsuario) {
+			if (usuario.getId() > maior)
+				maior = usuario.getId();
+		}
+		return maior;
 	}
 	
 	public void editar(Usuario usuario) {
-		setUsuario(usuario);
+		setUsuario(usuario.clone());
 	}
 
 	public Usuario getUsuario() {

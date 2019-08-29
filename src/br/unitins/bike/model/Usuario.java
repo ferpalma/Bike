@@ -1,13 +1,15 @@
 package br.unitins.bike.model;
 
-public class Usuario {
+import java.time.LocalDate;
+
+public class Usuario implements Cloneable {
 
 	private Integer id;
 	private String nome;
 	private String login;
 	private String senha;
+	private LocalDate dataAniversario;
 	private Boolean ativo = Boolean.TRUE;
-	
 	
 	public Usuario() {
 		super();
@@ -20,6 +22,34 @@ public class Usuario {
 		this.login = login;
 		this.senha = senha;
 		this.ativo = ativo;
+	}
+	
+	@Override
+	public Usuario clone()  {
+		try {
+			return (Usuario) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			System.out.println("Erro ao clonar.");
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 	public Integer getId() {
@@ -52,6 +82,14 @@ public class Usuario {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+	
+	public LocalDate getDataAniversario() {
+		return dataAniversario;
+	}
+
+	public void setDataAniversario(LocalDate dataAniversario) {
+		this.dataAniversario = dataAniversario;
 	}
 
 	public Boolean getAtivo() {

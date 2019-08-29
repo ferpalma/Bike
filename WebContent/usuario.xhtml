@@ -7,24 +7,41 @@
 	<h:outputStylesheet library="css" name="table.css"/>
 </h:head>
 <h:body>
+	<h:messages infoStyle="color:green" 
+				warnStyle="color:orange" 
+				errorStyle="color:red"/>
 	<h1>Cadastro de Usuário</h1>
 	<h:form>
 		<h:panelGrid columns="2">
 			<h:outputLabel value="Nome: " />
 			<h:inputText value="#{usuarioController.usuario.nome}" />
 			<h:outputLabel value="Login: " />
-			<h:inputText value="#{usuarioController.usuario.login}" />
+			<h:inputText value="#{usuarioController.usuario.login}" 
+						 required="true" 
+						 requiredMessage="O campo login não pode ser nulo.	"/>
 			<h:outputLabel value="Senha: " />
 			<h:inputSecret value="#{usuarioController.usuario.senha}" />
+			<h:outputLabel value="Data de Aniversário: " />
+			<h:inputText value="#{usuarioController.usuario.dataAniversario}">
+				<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+			</h:inputText>			
 			<h:outputLabel value="Usuario ativo: " />
 			<h:selectBooleanCheckbox value="#{usuarioController.usuario.ativo}" />
 		</h:panelGrid>
 		
 		<h:panelGrid columns="4">
 			<h:commandButton value="Incluir" 
+				disabled="#{usuarioController.usuario.id != null}"
 				actionListener="#{usuarioController.incluir()}"/>
-			<h:commandButton value="Alterar" />
-			<h:commandButton value="Excluir" />
+				
+			<h:commandButton value="Alterar" 
+				disabled="#{usuarioController.usuario.id == null}"
+				actionListener="#{usuarioController.alterar()}"/>
+				
+			<h:commandButton value="Excluir" 
+				disabled="#{usuarioController.usuario.id == null}" 
+				actionListener="#{usuarioController.excluir()}"/>
+				
 			<h:commandButton value="Limpar" 
 				actionListener="#{usuarioController.limpar()}"/>
 		</h:panelGrid>
@@ -40,7 +57,7 @@
 			</h:column>
 			<h:column>
 				<f:facet name="header">Nome</f:facet>
-				<h:commandLink value="#{obj.nome}" 
+				<h:commandLink value="#{obj.nome}" style="color: black;"
 					actionListener="#{usuarioController.editar(obj)}"/>
 			</h:column>
 			<h:column>
@@ -52,8 +69,18 @@
 				<h:outputLabel value="#{obj.senha}"/>
 			</h:column>
 			<h:column>
+				<f:facet name="header">Data de Aniversário</f:facet>
+				<h:outputLabel value="#{obj.dataAniversario}">
+					<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+				</h:outputLabel>
+			</h:column>
+			<h:column>
 				<f:facet name="header">Ativo</f:facet>
-				<h:outputLabel value="#{obj.ativo}"/>
+				<h:outputLabel value="#{obj.ativo == true ? 'Sim' : 'Não' }"/>
+			</h:column>
+			<h:column>
+				<h:commandLink value="Apagar" 
+					actionListener="#{usuarioController.excluir(obj)}"/>
 			</h:column>
 
 		</h:dataTable>
