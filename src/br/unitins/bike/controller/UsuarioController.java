@@ -1,6 +1,7 @@
 package br.unitins.bike.controller;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import br.unitins.bike.application.Util;
+import br.unitins.bike.model.Telefone;
 import br.unitins.bike.model.Usuario;
 
 @Named
@@ -24,8 +26,10 @@ public class UsuarioController implements Serializable {
 	public List<Usuario> getListaUsuario() {
 		if (listaUsuario == null) {
 			listaUsuario = new ArrayList<Usuario>();
-			listaUsuario.add(new Usuario(1, "Pedro", "pedro", "123", true));
-			listaUsuario.add(new Usuario(2, "Maria", "maria", "321", false));
+			listaUsuario.add(new Usuario(1, "Pedro", "pedro", "123", true, 
+					LocalDate.now(), new Telefone()));
+			listaUsuario.add(new Usuario(2, "Maria", "maria", "321", false, 
+					LocalDate.now(), new Telefone()));
 		}
 		return listaUsuario;
 	}
@@ -59,6 +63,7 @@ public class UsuarioController implements Serializable {
 	}
 	
 	public void excluir(Usuario usuario) {
+		System.out.println("entrou");
 		getListaUsuario().remove(usuario);
 		limpar();
 		Util.addMessageInfo("Exclusão realizada com sucesso.");
@@ -87,12 +92,15 @@ public class UsuarioController implements Serializable {
 	}
 	
 	public void editar(Usuario usuario) {
+		System.out.println("dfsgfgsdf");
 		setUsuario(usuario.clone());
 	}
 
 	public Usuario getUsuario() {
-		if (usuario == null)
+		if (usuario == null) {
 			usuario = new Usuario();
+			usuario.setTelefone(new Telefone());
+		}
 		return usuario;
 	}
 

@@ -10,22 +10,25 @@ public class Usuario implements Cloneable {
 	private String senha;
 	private LocalDate dataAniversario;
 	private Boolean ativo = Boolean.TRUE;
-	
+	private Telefone telefone;
+
 	public Usuario() {
 		super();
 	}
 
-	public Usuario(Integer id, String nome, String login, String senha, Boolean ativo) {
+	public Usuario(Integer id, String nome, String login, String senha, Boolean ativo, LocalDate data, Telefone telefone) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.login = login;
 		this.senha = senha;
 		this.ativo = ativo;
+		this.dataAniversario = data;
+		this.telefone = telefone;
 	}
-	
+
 	@Override
-	public Usuario clone()  {
+	public Usuario clone() {
 		try {
 			return (Usuario) super.clone();
 		} catch (CloneNotSupportedException e) {
@@ -34,7 +37,7 @@ public class Usuario implements Cloneable {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -83,7 +86,7 @@ public class Usuario implements Cloneable {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-	
+
 	public LocalDate getDataAniversario() {
 		return dataAniversario;
 	}
@@ -99,4 +102,13 @@ public class Usuario implements Cloneable {
 	public void setAtivo(Boolean ativo) {
 		this.ativo = ativo;
 	}
+
+	public Telefone getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(Telefone telefone) {
+		this.telefone = telefone;
+	}
+
 }

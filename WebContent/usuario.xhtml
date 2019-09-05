@@ -7,12 +7,12 @@
 	<h:outputStylesheet library="css" name="table.css"/>
 </h:head>
 <h:body>
-	<h:messages infoStyle="color:green" 
+	<h:messages id="messages" infoStyle="color:green" 
 				warnStyle="color:orange" 
 				errorStyle="color:red"/>
 	<h1>Cadastro de Usuário</h1>
-	<h:form>
-		<h:panelGrid columns="2">
+	<h:form id="formPrincipal">
+		<h:panelGrid id="panelPrincipal" columns="2">
 			<h:outputLabel value="Nome: " />
 			<h:inputText value="#{usuarioController.usuario.nome}" />
 			<h:outputLabel value="Login: " />
@@ -27,64 +27,89 @@
 			</h:inputText>			
 			<h:outputLabel value="Usuario ativo: " />
 			<h:selectBooleanCheckbox value="#{usuarioController.usuario.ativo}" />
+			
+			<h:outputLabel value="DDD: " />
+			<h:inputText value="#{usuarioController.usuario.telefone.codigoArea}" />
+			<h:outputLabel value="Telefone: " />
+			<h:inputText value="#{usuarioController.usuario.telefone.numero}" />
 		</h:panelGrid>
 		
-		<h:panelGrid columns="4">
+		<h:panelGrid id="panelBotoes" columns="4">
 			<h:commandButton value="Incluir" 
 				disabled="#{usuarioController.usuario.id != null}"
-				actionListener="#{usuarioController.incluir()}"/>
-				
+				actionListener="#{usuarioController.incluir()}">
+				<f:ajax render="formPrincipal messages" execute="formPrincipal"/>
+			</h:commandButton>		
 			<h:commandButton value="Alterar" 
 				disabled="#{usuarioController.usuario.id == null}"
-				actionListener="#{usuarioController.alterar()}"/>
+				actionListener="#{usuarioController.alterar()}">
+				<f:ajax render="formPrincipal messages" execute="formPrincipal"/>
+			</h:commandButton>
 				
 			<h:commandButton value="Excluir" 
 				disabled="#{usuarioController.usuario.id == null}" 
-				actionListener="#{usuarioController.excluir()}"/>
+				actionListener="#{usuarioController.excluir()}">
+				<f:ajax render="@all" execute="@this"/>
+			</h:commandButton>
 				
 			<h:commandButton value="Limpar" 
-				actionListener="#{usuarioController.limpar()}"/>
+				actionListener="#{usuarioController.limpar()}">
+				<f:ajax render="@form messages" execute="@this"/>
+			</h:commandButton>
 		</h:panelGrid>
-	</h:form>
-	<h:form>	
-		<h:dataTable value="#{usuarioController.listaUsuario}" var="obj"
-				styleClass="table"
-				headerClass="table-header"
-				rowClasses="table-odd-row, table-even-row">
-			<h:column>
-				<f:facet name="header">Id</f:facet>
-				<h:outputLabel value="#{obj.id}"/>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Nome</f:facet>
-				<h:commandLink value="#{obj.nome}" style="color: black;"
-					actionListener="#{usuarioController.editar(obj)}"/>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Login</f:facet>
-				<h:outputLabel value="#{obj.login}"/>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Senha</f:facet>
-				<h:outputLabel value="#{obj.senha}"/>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Data de Aniversário</f:facet>
-				<h:outputLabel value="#{obj.dataAniversario}">
-					<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
-				</h:outputLabel>
-			</h:column>
-			<h:column>
-				<f:facet name="header">Ativo</f:facet>
-				<h:outputLabel value="#{obj.ativo == true ? 'Sim' : 'Não' }"/>
-			</h:column>
-			<h:column>
-				<h:commandLink value="Apagar" 
-					actionListener="#{usuarioController.excluir(obj)}"/>
-			</h:column>
-
-		</h:dataTable>
 		
+		<h:panelGrid id="panelDataTable">
+			<h:dataTable id="dataTable" value="#{usuarioController.listaUsuario}" var="obj"
+					styleClass="table"
+					headerClass="table-header"
+					rowClasses="table-odd-row, table-even-row">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:outputLabel value="#{obj.id}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Nome</f:facet>
+					<h:commandLink value="#{obj.nome}" style="color: black;"
+						actionListener="#{usuarioController.editar(obj)}">
+						<f:ajax 
+							render="formPrincipal:panelPrincipal formPrincipal:panelBotoes" 
+							execute="formPrincipal:dataTable"/>
+					</h:commandLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Login</f:facet>
+					<h:outputLabel value="#{obj.login}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Senha</f:facet>
+					<h:outputLabel value="#{obj.senha}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Data de Aniversário</f:facet>
+					<h:outputLabel value="#{obj.dataAniversario}">
+						<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Ativo</f:facet>
+					<h:outputLabel value="#{obj.ativo == true ? 'Sim' : 'Não' }"/>
+				</h:column>
+				<h:column>
+					<h:commandLink value="Apagar" 
+						actionListener="#{usuarioController.excluir(obj)}">
+						<f:ajax 
+							render="formPrincipal" 
+							execute="formPrincipal:dataTable"/>
+					</h:commandLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Telefone</f:facet>
+					<h:outputLabel 
+						value="#{obj.telefone.codigoArea} - #{obj.telefone.numero}"/>
+				</h:column>
+	
+			</h:dataTable>
+		</h:panelGrid>
 	</h:form>
 
 </h:body>
