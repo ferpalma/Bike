@@ -2,12 +2,23 @@ package br.unitins.bike.model;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 public class Usuario implements Cloneable {
 
 	private Integer id;
+	
+	@NotEmpty(message = "O campo Nome não pode ser vazio")
+	@Size(max = 60, message = "O campo Nome deve conter no máximo 60 caracteres")
 	private String nome;
+	@Email
 	private String login;
+	@Size(min = 6, max = 30, message = "A senha deve conter entre 6 e 30 caracteres")
 	private String senha;
+	@Past
 	private LocalDate dataAniversario;
 	private Boolean ativo = Boolean.TRUE;
 	private Telefone telefone;

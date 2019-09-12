@@ -17,16 +17,10 @@
 				/>
 		<h:panelGrid id="panelPrincipal" columns="2">
 			<h:outputLabel value="Nome: " />
-			<h:inputText value="#{usuarioController.usuario.nome}" />
+			<h:inputText value="#{usuarioController.usuario.nome}" immediate="true"/>
 			
 			<h:outputLabel value="Login: " />
-			<h:panelGrid columns="2">
-				<h:inputText id="inputLogin" value="#{usuarioController.usuario.login}" 
-							 requiredMessage="O campo login não pode ser nulo.">
-					<f:validateRequired />
-				</h:inputText>
-				<h:message for="inputLogin" style="color:red" />
-			</h:panelGrid>
+			<h:inputText id="inputLogin" value="#{usuarioController.usuario.login}"/> 
 			
 			<h:outputLabel value="Senha: " />
 			<h:inputSecret value="#{usuarioController.usuario.senha}" />
@@ -41,14 +35,6 @@
 			<h:inputText value="#{usuarioController.usuario.telefone.codigoArea}" />
 			<h:outputLabel value="Telefone: " />
 			<h:inputText value="#{usuarioController.usuario.telefone.numero}" />
-			
-			<h:outputLabel value="Cep: " />
-			<h:panelGrid columns="2">
-				<h:inputText id="inputCep">
-					<f:validateRegex for="inputCep" pattern="([0-9]{5}[-][0-9]{3})"/>
-				</h:inputText>
-				<h:message for="inputCep" style="color:red" />
-			</h:panelGrid>
 			
 		</h:panelGrid>
 		
