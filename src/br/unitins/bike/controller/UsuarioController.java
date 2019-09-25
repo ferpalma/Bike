@@ -1,6 +1,10 @@
 package br.unitins.bike.controller;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,12 @@ public class UsuarioController implements Serializable {
 	
 	private List<Usuario> listaUsuario;
 	
+	
+	public static void main(String[] args) {
+		
+		
+	}
+	
 	public List<Usuario> getListaUsuario() {
 		if (listaUsuario == null) {
 			listaUsuario = new ArrayList<Usuario>();
@@ -35,12 +45,53 @@ public class UsuarioController implements Serializable {
 	}
 	
 	public void incluir() {
-		if (validarDados()) {
-			getUsuario().setId(ultimoId() + 1);
-			getListaUsuario().add(getUsuario());
-			limpar();
-			Util.addMessageInfo("Inclusão realizada com sucesso.");
+		
+		Connection  conn = null;
+		try {
+			// registrando o drive do prostgres
+			Class.forName("org.postgresql.Driver");
+			// estabelecendo uma conexao com o banco de dados
+			conn = 
+					DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/bikedb", 
+							"topicos", "123456");
+		} catch (SQLException e) {
+			System.out.println("Falha ao conectar ao banco de dados.");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("Fala ao resgistrar o Driver do banco");
+			e.printStackTrace();
 		}
+		System.out.println("Conexao realizada com sucesso.");
+		
+		try {
+			PreparedStatement stat = conn.prepareStatement(
+					"INSERT INTO " +
+				    "public.usuario " +
+				    " (nome, login, senha, ativo) " +
+					"VALUES " +
+				    " (?, ?, ?, ?) ");
+			stat.setString(1, getUsuario().getNome());
+			stat.setString(2, getUsuario().getLogin());
+			stat.setString(3, getUsuario().getSenha());
+			stat.setBoolean(4, getUsuario().getAtivo());
+			
+			stat.execute();
+			
+			Util.addMessageInfo("Inclusão realizada com sucesso.");
+			limpar();
+			
+		} catch (SQLException e) {
+			Util.addMessageInfo("Erro ao executar um Insert");
+			e.printStackTrace();
+		}
+		
+		
+//		if (validarDados()) {
+//			getUsuario().setId(ultimoId() + 1);
+//			getListaUsuario().add(getUsuario());
+//			limpar();
+//			Util.addMessageInfo("Inclusão realizada com sucesso.");
+//		}
 	}
 	
 	public void alterar() {

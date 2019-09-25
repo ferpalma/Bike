@@ -17,7 +17,7 @@
 				/>
 		<h:panelGrid id="panelPrincipal" columns="2">
 			<h:outputLabel value="Nome: " />
-			<h:inputText value="#{usuarioController.usuario.nome}" />
+			<h:inputText id="inputNome" value="#{usuarioController.usuario.nome}" />
 			
 			<h:outputLabel value="Login: " />
 			<h:panelGrid columns="2">
@@ -30,12 +30,14 @@
 			
 			<h:outputLabel value="Senha: " />
 			<h:inputSecret value="#{usuarioController.usuario.senha}" />
+			
 			<h:outputLabel value="Data de Aniversário: " />
-			<h:inputText value="#{usuarioController.usuario.dataAniversario}">
+			<h:inputText id="inputData" value="#{usuarioController.usuario.dataAniversario}">
 				<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+				<f:ajax resetValues="true"/>
 			</h:inputText>			
 			<h:outputLabel value="Usuario ativo: " />
-			<h:selectBooleanCheckbox value="#{usuarioController.usuario.ativo}" />
+			<h:selectBooleanCheckbox id="checkAtivo" value="#{usuarioController.usuario.ativo}" />
 			
 			<h:outputLabel value="DDD: " />
 			<h:inputText value="#{usuarioController.usuario.telefone.codigoArea}" />
@@ -56,7 +58,8 @@
 			<h:commandButton value="Incluir" 
 				disabled="#{usuarioController.usuario.id != null}"
 				actionListener="#{usuarioController.incluir()}">
-				<f:ajax render="formPrincipal messages" execute="formPrincipal"/>
+				<f:ajax render="formPrincipal" execute="panelPrincipal" resetValues="true"/>
+				
 			</h:commandButton>		
 			<h:commandButton value="Alterar" 
 				disabled="#{usuarioController.usuario.id == null}"
@@ -72,7 +75,7 @@
 				
 			<h:commandButton value="Limpar" 
 				action="#{usuarioController.limpar()}">
-				<f:ajax render="@form messages" execute="@this"/>
+				<f:ajax render="formPrincipal inputNome inputData inputCep checkAtivo" execute="@this" resetValues="true"/>
 			</h:commandButton>
 		</h:panelGrid>
 		

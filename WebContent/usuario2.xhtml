@@ -17,7 +17,7 @@
 				/>
 		<h:panelGrid id="panelPrincipal" columns="2">
 			<h:outputLabel value="Nome: " />
-			<h:inputText value="#{usuarioController.usuario.nome}" immediate="true"/>
+			<h:inputText value="#{usuarioController.usuario.nome}"/>
 			
 			<h:outputLabel value="Login: " />
 			<h:inputText id="inputLogin" value="#{usuarioController.usuario.login}"/> 
@@ -58,7 +58,7 @@
 				
 			<h:commandButton value="Limpar" 
 				action="#{usuarioController.limpar()}">
-				<f:ajax render="@form messages" execute="@this"/>
+				<f:ajax render="@form messages" execute="@this" resetValues="true"/>
 			</h:commandButton>
 		</h:panelGrid>
 		
