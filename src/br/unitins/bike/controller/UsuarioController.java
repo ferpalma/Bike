@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,12 +36,54 @@ public class UsuarioController implements Serializable {
 	
 	public List<Usuario> getListaUsuario() {
 		if (listaUsuario == null) {
-			listaUsuario = new ArrayList<Usuario>();
-			listaUsuario.add(new Usuario(1, "Pedro", "pedro", "123", true, 
-					LocalDate.now(), new Telefone()));
-			listaUsuario.add(new Usuario(2, "Maria", "maria", "321", false, 
-					LocalDate.now(), new Telefone()));
-		}
+			Connection  conn = null;
+			try {
+				// registrando o drive do prostgres
+				Class.forName("org.postgresql.Driver");
+				// estabelecendo uma conexao com o banco de dados
+				conn = 
+						DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/bikedb", 
+								"topicos", "123456");
+			} catch (SQLException e) {
+				System.out.println("Falha ao conectar ao banco de dados.");
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				System.out.println("Fala ao resgistrar o Driver do banco");
+				e.printStackTrace();
+			}
+			System.out.println("Conexao realizada com sucesso.");
+			
+			try {
+				PreparedStatement stat = conn.prepareStatement(
+						"SELECT " +
+						"  id, " +
+						"  nome, " +
+						"  login, " +
+						"  senha, " +
+						"  ativo " +
+						"FROM " +
+						"  public.usuario ");
+				ResultSet rs = stat.executeQuery();
+				
+				listaUsuario = new ArrayList<Usuario>();
+				
+				while(rs.next()) {
+					Usuario usuario = new Usuario();
+					usuario.setId(rs.getInt("id"));
+					usuario.setNome(rs.getString("nome"));
+					usuario.setLogin(rs.getString("login"));
+					usuario.setSenha(rs.getString("senha"));
+					usuario.setAtivo(rs.getBoolean("ativo"));
+					
+					listaUsuario.add(usuario);
+				}
+			
+			} catch (SQLException e) {
+				Util.addMessageInfo("Erro ao executar um SQL");
+				e.printStackTrace();
+			}
+			
+		} // if
 		return listaUsuario;
 	}
 	
@@ -79,6 +122,7 @@ public class UsuarioController implements Serializable {
 			
 			Util.addMessageInfo("Inclusão realizada com sucesso.");
 			limpar();
+			listaUsuario = null;
 			
 		} catch (SQLException e) {
 			Util.addMessageInfo("Erro ao executar um Insert");
