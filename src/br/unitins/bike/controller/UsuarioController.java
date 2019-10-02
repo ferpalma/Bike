@@ -2,11 +2,9 @@ package br.unitins.bike.controller;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import br.unitins.bike.application.Util;
+import br.unitins.bike.dao.UsuarioDAO;
 import br.unitins.bike.model.Telefone;
 import br.unitins.bike.model.Usuario;
 
@@ -28,107 +27,26 @@ public class UsuarioController implements Serializable {
 	
 	private List<Usuario> listaUsuario;
 	
-	
-	public static void main(String[] args) {
-		
-		
-	}
-	
 	public List<Usuario> getListaUsuario() {
 		if (listaUsuario == null) {
-			Connection  conn = null;
-			try {
-				// registrando o drive do prostgres
-				Class.forName("org.postgresql.Driver");
-				// estabelecendo uma conexao com o banco de dados
-				conn = 
-						DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/bikedb", 
-								"topicos", "123456");
-			} catch (SQLException e) {
-				System.out.println("Falha ao conectar ao banco de dados.");
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				System.out.println("Fala ao resgistrar o Driver do banco");
-				e.printStackTrace();
-			}
-			System.out.println("Conexao realizada com sucesso.");
-			
-			try {
-				PreparedStatement stat = conn.prepareStatement(
-						"SELECT " +
-						"  id, " +
-						"  nome, " +
-						"  login, " +
-						"  senha, " +
-						"  ativo " +
-						"FROM " +
-						"  public.usuario ");
-				ResultSet rs = stat.executeQuery();
-				
+			UsuarioDAO dao = new UsuarioDAO();
+			listaUsuario = dao.findAll();
+			if (listaUsuario == null)
 				listaUsuario = new ArrayList<Usuario>();
-				
-				while(rs.next()) {
-					Usuario usuario = new Usuario();
-					usuario.setId(rs.getInt("id"));
-					usuario.setNome(rs.getString("nome"));
-					usuario.setLogin(rs.getString("login"));
-					usuario.setSenha(rs.getString("senha"));
-					usuario.setAtivo(rs.getBoolean("ativo"));
-					
-					listaUsuario.add(usuario);
-				}
-			
-			} catch (SQLException e) {
-				Util.addMessageInfo("Erro ao executar um SQL");
-				e.printStackTrace();
-			}
-			
-		} // if
+		} 
 		return listaUsuario;
 	}
-	
+
 	public void incluir() {
-		
-		Connection  conn = null;
-		try {
-			// registrando o drive do prostgres
-			Class.forName("org.postgresql.Driver");
-			// estabelecendo uma conexao com o banco de dados
-			conn = 
-					DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/bikedb", 
-							"topicos", "123456");
-		} catch (SQLException e) {
-			System.out.println("Falha ao conectar ao banco de dados.");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println("Fala ao resgistrar o Driver do banco");
-			e.printStackTrace();
-		}
-		System.out.println("Conexao realizada com sucesso.");
-		
-		try {
-			PreparedStatement stat = conn.prepareStatement(
-					"INSERT INTO " +
-				    "public.usuario " +
-				    " (nome, login, senha, ativo) " +
-					"VALUES " +
-				    " (?, ?, ?, ?) ");
-			stat.setString(1, getUsuario().getNome());
-			stat.setString(2, getUsuario().getLogin());
-			stat.setString(3, getUsuario().getSenha());
-			stat.setBoolean(4, getUsuario().getAtivo());
-			
-			stat.execute();
-			
+		UsuarioDAO dao = new UsuarioDAO();
+		// faz a inclusao no banco de dados
+		if (dao.create(getUsuario())) {
 			Util.addMessageInfo("Inclusão realizada com sucesso.");
 			limpar();
 			listaUsuario = null;
-			
-		} catch (SQLException e) {
-			Util.addMessageInfo("Erro ao executar um Insert");
-			e.printStackTrace();
+		} else {
+			Util.addMessageInfo("Erro ao incluir o Usuário no Banco de Dados.");
 		}
-		
 		
 //		if (validarDados()) {
 //			getUsuario().setId(ultimoId() + 1);
