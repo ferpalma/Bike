@@ -22,6 +22,7 @@ public class Usuario implements Cloneable {
 	private LocalDate dataAniversario;
 	private Boolean ativo = Boolean.TRUE;
 	private Telefone telefone;
+	private Perfil perfil;
 
 	public Usuario() {
 		super();
@@ -120,6 +121,14 @@ public class Usuario implements Cloneable {
 
 	public void setTelefone(Telefone telefone) {
 		this.telefone = telefone;
+	}
+
+	public Perfil getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(Perfil perfil) {
+		this.perfil = perfil;
 	}
 
 }

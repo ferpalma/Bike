@@ -1,10 +1,6 @@
 package br.unitins.bike.controller;
 
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +9,7 @@ import javax.inject.Named;
 
 import br.unitins.bike.application.Util;
 import br.unitins.bike.dao.UsuarioDAO;
+import br.unitins.bike.model.Perfil;
 import br.unitins.bike.model.Telefone;
 import br.unitins.bike.model.Usuario;
 
@@ -38,48 +35,47 @@ public class UsuarioController implements Serializable {
 	}
 
 	public void incluir() {
-		UsuarioDAO dao = new UsuarioDAO();
-		// faz a inclusao no banco de dados
-		if (dao.create(getUsuario())) {
-			Util.addMessageInfo("Inclusão realizada com sucesso.");
-			limpar();
-			listaUsuario = null;
-		} else {
-			Util.addMessageInfo("Erro ao incluir o Usuário no Banco de Dados.");
+		if (validarDados()) {
+			UsuarioDAO dao = new UsuarioDAO();
+			// faz a inclusao no banco de dados
+			if (dao.create(getUsuario())) {
+				Util.addMessageInfo("Inclusão realizada com sucesso.");
+				limpar();
+				listaUsuario = null;
+			} else 
+				Util.addMessageInfo("Erro ao incluir o Usuário no Banco de Dados.");
 		}
-		
-//		if (validarDados()) {
-//			getUsuario().setId(ultimoId() + 1);
-//			getListaUsuario().add(getUsuario());
-//			limpar();
-//			Util.addMessageInfo("Inclusão realizada com sucesso.");
-//		}
 	}
 	
 	public void alterar() {
 		if (validarDados()) {
-			int index = getListaUsuario().indexOf(getUsuario());
-			if (index == -1) {
-				Util.addMessageError("Objeto não encontrado na lista.");
-			} else {
-				getListaUsuario().set(index, getUsuario());
-				limpar();
+			UsuarioDAO dao = new UsuarioDAO();
+			// faz a alteracao no banco de dados
+			if (dao.update(getUsuario())) {
 				Util.addMessageInfo("Alteração realizada com sucesso.");
-			}
+				limpar();
+				listaUsuario = null;
+			} else 
+				Util.addMessageInfo("Erro ao alterar o Usuário no Banco de Dados.");
 		}
 	}
 	
 	public void excluir() {
-		getListaUsuario().remove(getUsuario());
-		limpar();
-		Util.addMessageInfo("Exclusão realizada com sucesso.");
+		if (excluir(getUsuario()))
+			limpar();
 	}
 	
-	public void excluir(Usuario usuario) {
-		System.out.println("entrou");
-		getListaUsuario().remove(usuario);
-		limpar();
-		Util.addMessageInfo("Exclusão realizada com sucesso.");
+	public boolean excluir(Usuario usuario) {
+		UsuarioDAO dao = new UsuarioDAO();
+		// faz a exclusao no banco de dados
+		if (dao.delete(usuario.getId())) {
+			Util.addMessageInfo("Exclusão realizada com sucesso.");
+			listaUsuario = null;
+			return true;
+		} else {
+			Util.addMessageInfo("Erro ao excluir o Usuário no Banco de Dados.");
+			return false;
+		}
 	}
 
 	private boolean validarDados() {
@@ -105,8 +101,11 @@ public class UsuarioController implements Serializable {
 	}
 	
 	public void editar(Usuario usuario) {
-		System.out.println("dfsgfgsdf");
-		setUsuario(usuario.clone());
+		UsuarioDAO dao = new UsuarioDAO();
+		// buscando um usuario pelo id
+		Usuario usu = dao.findId(usuario.getId());
+		setUsuario(usu);
+//		setUsuario(dao.findId(usuario.getId()));
 	}
 
 	public Usuario getUsuario() {
@@ -123,6 +122,10 @@ public class UsuarioController implements Serializable {
 	
 	public void limpar() {
 		usuario = null;
+	}
+	
+	public Perfil[] getListaPerfil() {
+		return Perfil.values();
 	}
 	
 }

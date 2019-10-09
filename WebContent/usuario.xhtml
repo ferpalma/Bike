@@ -44,13 +44,16 @@
 			<h:outputLabel value="Telefone: " />
 			<h:inputText value="#{usuarioController.usuario.telefone.numero}" />
 			
-			<h:outputLabel value="Cep: " />
-			<h:panelGrid columns="2">
-				<h:inputText id="inputCep">
-					<f:validateRegex for="inputCep" pattern="([0-9]{5}[-][0-9]{3})"/>
-				</h:inputText>
-				<h:message for="inputCep" style="color:red" />
-			</h:panelGrid>
+			<h:outputLabel value="Perfil: " />
+			<h:selectOneMenu 
+				value="#{usuarioController.usuario.perfil}">
+				<f:selectItem itemLabel="Selecione ...."/>
+				<f:selectItems 
+					value = "#{usuarioController.listaPerfil}"
+					var="perfil"
+					itemLabel="#{perfil.label}"
+					itemValue="#{perfil}"/>
+			</h:selectOneMenu>
 			
 		</h:panelGrid>
 		
@@ -124,9 +127,9 @@
 					</h:commandLink>
 				</h:column>
 				<h:column>
-					<f:facet name="header">Telefone</f:facet>
+					<f:facet name="header">Perfil</f:facet>
 					<h:outputLabel 
-						value="#{obj.telefone.codigoArea} - #{obj.telefone.numero}"/>
+						value="#{obj.perfil.label}"/>
 				</h:column>
 	
 			</h:dataTable>
