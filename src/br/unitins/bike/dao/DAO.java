@@ -4,13 +4,13 @@ import java.util.List;
 
 import br.unitins.bike.model.Usuario;
 
-public interface DAO {
+public interface DAO<T>{
 	
 	// CRUD
 	
-	public boolean create(Usuario usuario);
-	public boolean update(Usuario usuario);
+	public boolean create(T entity);
+	public boolean update(T entity);
 	public boolean delete(int id);
-	public List<Usuario> findAll();
+	public List<T> findAll();
 
 }

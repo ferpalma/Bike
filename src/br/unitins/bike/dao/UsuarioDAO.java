@@ -13,7 +13,7 @@ import br.unitins.bike.model.Perfil;
 import br.unitins.bike.model.Telefone;
 import br.unitins.bike.model.Usuario;
 
-public class UsuarioDAO implements DAO {
+public class UsuarioDAO implements DAO<Usuario> {
 	
 	private Connection getConexao() {
 		Connection  conn = null;
