@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,12 +43,16 @@ public class UsuarioDAO implements DAO {
 			return false;
 		
 		try {
+			
+			// para tratar a transacao manualmente (commit e rollback)
+			conn.setAutoCommit(false);
+			
 			PreparedStatement stat = conn.prepareStatement(
 					"INSERT INTO " +
 				    "public.usuario " +
 				    " (nome, login, senha, ativo, perfil) " +
 					"VALUES " +
-				    " (?, ?, ?, ?, ?) ");
+				    " (?, ?, ?, ?, ?) ", Statement.RETURN_GENERATED_KEYS);
 			stat.setString(1, usuario.getNome());
 			stat.setString(2, usuario.getLogin());
 			stat.setString(3, usuario.getSenha());
@@ -55,9 +60,34 @@ public class UsuarioDAO implements DAO {
 			stat.setInt(5, usuario.getPerfil().getValue());
 			
 			stat.execute();
+			
+			// obtendo o id gerado pela tabela do banco de dados
+			ResultSet rs = stat.getGeneratedKeys();
+			rs.next();
+			usuario.getTelefone().setId(rs.getInt("id"));
+			
+			
+			stat = conn.prepareStatement(
+					"INSERT INTO " +
+				    "public.telefone " +
+				    " (id, codigoarea, numero) " +
+					"VALUES " +
+				    " (?, ?, ?) ");
+			stat.setInt(1, usuario.getTelefone().getId());
+			stat.setString(2, usuario.getTelefone().getCodigoArea());
+			stat.setString(3, usuario.getTelefone().getNumero());
+			
+			stat.execute();
+			
+			conn.commit();
 			return true;
 			
 		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 		return false;
