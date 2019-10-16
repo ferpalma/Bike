@@ -1,7 +1,6 @@
 package br.unitins.bike.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,84 +12,44 @@ import br.unitins.bike.model.Perfil;
 import br.unitins.bike.model.Telefone;
 import br.unitins.bike.model.Usuario;
 
-public class UsuarioDAO implements DAO<Usuario> {
+public class UsuarioDAO extends DAO<Usuario> {
 	
-	private Connection getConexao() {
-		Connection  conn = null;
-		try {
-			// registrando o drive do prostgres
-			Class.forName("org.postgresql.Driver");
-			// estabelecendo uma conexao com o banco de dados
-			conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/bikedb", 
-							"topicos", "123456");
-			System.out.println("Conexao realizada com sucesso.");
-		} catch (SQLException e) {
-			System.out.println("Falha ao conectar ao banco de dados.");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println("Fala ao resgistrar o Driver do banco");
-			e.printStackTrace();
-		}
-		
-		return conn;
+	public UsuarioDAO(Connection conn) {
+		super(conn);
+	}
+	
+	public UsuarioDAO() {
+		// tchê papai ... cria uma nova conexao
+		super(null);
 	}
 
 	@Override
-	public boolean create(Usuario usuario) {
+	public void create(Usuario usuario) throws SQLException {
 		
 		Connection  conn = getConexao();
-		if (conn == null) 
-			return false;
+			
+		PreparedStatement stat = conn.prepareStatement(
+				"INSERT INTO " +
+			    "public.usuario " +
+			    " (nome, login, senha, ativo, perfil) " +
+				"VALUES " +
+			    " (?, ?, ?, ?, ?) ", Statement.RETURN_GENERATED_KEYS);
+		stat.setString(1, usuario.getNome());
+		stat.setString(2, usuario.getLogin());
+		stat.setString(3, usuario.getSenha());
+		stat.setBoolean(4, usuario.getAtivo());
+		stat.setInt(5, usuario.getPerfil().getValue());
 		
-		try {
+		stat.execute();
+		
+		// obtendo o id gerado pela tabela do banco de dados
+		ResultSet rs = stat.getGeneratedKeys();
+		rs.next();
+		usuario.getTelefone().setId(rs.getInt("id"));
+		
+		TelefoneDAO dao = new TelefoneDAO(conn);
+		dao.create(usuario.getTelefone());
 			
-			// para tratar a transacao manualmente (commit e rollback)
-			conn.setAutoCommit(false);
-			
-			PreparedStatement stat = conn.prepareStatement(
-					"INSERT INTO " +
-				    "public.usuario " +
-				    " (nome, login, senha, ativo, perfil) " +
-					"VALUES " +
-				    " (?, ?, ?, ?, ?) ", Statement.RETURN_GENERATED_KEYS);
-			stat.setString(1, usuario.getNome());
-			stat.setString(2, usuario.getLogin());
-			stat.setString(3, usuario.getSenha());
-			stat.setBoolean(4, usuario.getAtivo());
-			stat.setInt(5, usuario.getPerfil().getValue());
-			
-			stat.execute();
-			
-			// obtendo o id gerado pela tabela do banco de dados
-			ResultSet rs = stat.getGeneratedKeys();
-			rs.next();
-			usuario.getTelefone().setId(rs.getInt("id"));
-			
-			
-			stat = conn.prepareStatement(
-					"INSERT INTO " +
-				    "public.telefone " +
-				    " (id, codigoarea, numero) " +
-					"VALUES " +
-				    " (?, ?, ?) ");
-			stat.setInt(1, usuario.getTelefone().getId());
-			stat.setString(2, usuario.getTelefone().getCodigoArea());
-			stat.setString(3, usuario.getTelefone().getNumero());
-			
-			stat.execute();
-			
-			conn.commit();
-			return true;
-			
-		} catch (SQLException e) {
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 	@Override

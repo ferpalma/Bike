@@ -1,6 +1,7 @@
 package br.unitins.bike.controller;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import br.unitins.bike.application.Util;
+import br.unitins.bike.dao.DAO;
 import br.unitins.bike.dao.UsuarioDAO;
 import br.unitins.bike.model.Perfil;
 import br.unitins.bike.model.Telefone;
@@ -26,7 +28,7 @@ public class UsuarioController implements Serializable {
 	
 	public List<Usuario> getListaUsuario() {
 		if (listaUsuario == null) {
-			UsuarioDAO dao = new UsuarioDAO();
+			DAO<Usuario> dao = new UsuarioDAO();
 			listaUsuario = dao.findAll();
 			if (listaUsuario == null)
 				listaUsuario = new ArrayList<Usuario>();
@@ -36,20 +38,26 @@ public class UsuarioController implements Serializable {
 
 	public void incluir() {
 		if (validarDados()) {
-			UsuarioDAO dao = new UsuarioDAO();
+			DAO<Usuario> dao = new UsuarioDAO();
 			// faz a inclusao no banco de dados
-			if (dao.create(getUsuario())) {
+			try {
+				dao.create(getUsuario());
+				dao.getConexao().commit();
 				Util.addMessageInfo("Inclusão realizada com sucesso.");
 				limpar();
 				listaUsuario = null;
-			} else 
+			} catch (SQLException e) {
+				dao.rollbackConnection();
+				dao.closeConnection();
 				Util.addMessageInfo("Erro ao incluir o Usuário no Banco de Dados.");
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public void alterar() {
 		if (validarDados()) {
-			UsuarioDAO dao = new UsuarioDAO();
+			DAO<Usuario> dao = new UsuarioDAO();
 			// faz a alteracao no banco de dados
 			if (dao.update(getUsuario())) {
 				Util.addMessageInfo("Alteração realizada com sucesso.");
@@ -66,7 +74,7 @@ public class UsuarioController implements Serializable {
 	}
 	
 	public boolean excluir(Usuario usuario) {
-		UsuarioDAO dao = new UsuarioDAO();
+		DAO<Usuario> dao = new UsuarioDAO();
 		// faz a exclusao no banco de dados
 		if (dao.delete(usuario.getId())) {
 			Util.addMessageInfo("Exclusão realizada com sucesso.");
