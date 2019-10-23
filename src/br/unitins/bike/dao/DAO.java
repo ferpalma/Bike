@@ -20,7 +20,7 @@ public abstract class DAO<T>{
 		this.conn = conn;
 	}
 	
-	public Connection getConexao() {
+	public Connection getConnection() {
 		if (isClosedConnection()) {
 			try {
 				// registrando o drive do prostgres
@@ -56,7 +56,7 @@ public abstract class DAO<T>{
 	
 	public void closeConnection() {
 		try {
-			getConexao().close();
+			getConnection().close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -64,7 +64,7 @@ public abstract class DAO<T>{
 	
 	public void rollbackConnection() {
 		try {
-			getConexao().rollback();
+			getConnection().rollback();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

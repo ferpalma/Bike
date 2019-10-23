@@ -42,7 +42,7 @@ public class UsuarioController implements Serializable {
 			// faz a inclusao no banco de dados
 			try {
 				dao.create(getUsuario());
-				dao.getConexao().commit();
+				dao.getConnection().commit();
 				Util.addMessageInfo("Inclusão realizada com sucesso.");
 				limpar();
 				listaUsuario = null;

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+	<title>Bike Shop</title>
+	<h:outputStylesheet library="css" name="table.css"/>
+</h:head>
+<h:body>
+	
+	<h1>Cadastro de Produto</h1>
+	<h:form id="formPrincipal">
+		<h:messages id="messages" infoStyle="color:green" 
+				warnStyle="color:orange" 
+				errorStyle="color:red"
+				globalOnly="false"
+				/>
+		<h:panelGrid id="panelPrincipal" columns="2">
+			<h:outputLabel value="Nome: " />
+			<h:inputText value="#{produtoController.produto.nome}" />
+			
+			<h:outputLabel value="Descrição: " />
+			<h:inputTextarea value="#{produtoController.produto.descricao}" />
+			
+			<h:outputLabel value="Valor: " />
+			<h:inputText value="#{produtoController.produto.valor}" />
+			
+		</h:panelGrid>
+		
+		<h:panelGrid id="panelBotoes" columns="4">
+			<h:commandButton value="Incluir" 
+				disabled="#{produtoController.produto.id != null}"
+				actionListener="#{produtoController.incluir()}">
+				<f:ajax render="formPrincipal" execute="panelPrincipal" resetValues="true"/>
+				
+			</h:commandButton>		
+			<h:commandButton value="Alterar" 
+				disabled="#{produtoController.produto.id == null}"
+				actionListener="#{produtoController.alterar()}">
+				<f:ajax render="formPrincipal messages" execute="formPrincipal"/>
+			</h:commandButton>
+				
+			<h:commandButton value="Excluir" 
+				disabled="#{produtoController.produto.id == null}" 
+				actionListener="#{produtoController.excluir()}">
+				<f:ajax render="@all" execute="@this"/>
+			</h:commandButton>
+				
+			<h:commandButton value="Limpar" 
+				action="#{produtoController.limpar()}">
+				<f:ajax render="formPrincipal" execute="@this" />
+			</h:commandButton>
+		</h:panelGrid>
+		
+	</h:form>
+
+</h:body>
+</html>

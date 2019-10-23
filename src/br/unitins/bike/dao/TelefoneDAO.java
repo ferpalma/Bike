@@ -17,7 +17,7 @@ public class TelefoneDAO extends DAO<Telefone> {
 
 	@Override
 	public void create(Telefone entity) throws SQLException {
-		Connection  conn = getConexao();
+		Connection  conn = getConnection();
 		
 		PreparedStatement stat = conn.prepareStatement(
 				"INSERT INTO " +

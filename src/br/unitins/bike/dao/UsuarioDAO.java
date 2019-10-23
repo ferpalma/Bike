@@ -26,7 +26,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 	@Override
 	public void create(Usuario usuario) throws SQLException {
 		
-		Connection  conn = getConexao();
+		Connection  conn = getConnection();
 			
 		PreparedStatement stat = conn.prepareStatement(
 				"INSERT INTO " +
@@ -54,7 +54,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 
 	@Override
 	public boolean update(Usuario usuario) {
-		Connection  conn = getConexao();
+		Connection  conn = getConnection();
 		if (conn == null) 
 			return false;
 		
@@ -87,7 +87,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 	@Override
 	public boolean delete(int id) {
 
-		Connection  conn = getConexao();
+		Connection  conn = getConnection();
 		if (conn == null) 
 			return false;
 		
@@ -107,7 +107,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 
 	@Override
 	public List<Usuario> findAll() {
-		Connection conn = getConexao();
+		Connection conn = getConnection();
 		if (conn == null) 
 			return null;
 		
@@ -149,7 +149,7 @@ public class UsuarioDAO extends DAO<Usuario> {
 	}
 
 	public Usuario findId(Integer id) {
-		Connection conn = getConexao();
+		Connection conn = getConnection();
 		if (conn == null) 
 			return null;
 		
