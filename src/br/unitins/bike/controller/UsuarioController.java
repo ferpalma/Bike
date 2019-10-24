@@ -59,12 +59,19 @@ public class UsuarioController implements Serializable {
 		if (validarDados()) {
 			DAO<Usuario> dao = new UsuarioDAO();
 			// faz a alteracao no banco de dados
-			if (dao.update(getUsuario())) {
+			try {
+				dao.update(getUsuario());
+				dao.getConnection().commit();
 				Util.addMessageInfo("Alteração realizada com sucesso.");
 				limpar();
 				listaUsuario = null;
-			} else 
+			} catch (SQLException e) {
+				dao.rollbackConnection();
+				dao.closeConnection();
 				Util.addMessageInfo("Erro ao alterar o Usuário no Banco de Dados.");
+				e.printStackTrace();
+			}
+				
 		}
 	}
 	

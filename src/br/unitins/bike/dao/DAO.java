@@ -11,7 +11,7 @@ public abstract class DAO<T>{
 	
 	// CRUD
 	public abstract void create(T entity) throws SQLException;
-	public abstract boolean update(T entity);
+	public abstract void update(T entity) throws SQLException;
 	public abstract boolean delete(int id);
 	public abstract List<T> findAll();
 	private Connection conn = null;

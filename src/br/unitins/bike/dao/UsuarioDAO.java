@@ -53,35 +53,27 @@ public class UsuarioDAO extends DAO<Usuario> {
 	}
 
 	@Override
-	public boolean update(Usuario usuario) {
+	public void update(Usuario usuario) throws SQLException {
 		Connection  conn = getConnection();
-		if (conn == null) 
-			return false;
 		
-		try {
-			PreparedStatement stat = conn.prepareStatement(
-					"UPDATE public.usuario SET " +
-				    " nome = ?, " +
-				    " login = ?, " +
-				    " senha = ?, " +
-				    " ativo = ?, " +
-				    " perfil = ? " +
-					"WHERE " +
-				    " id = ? ");
-			stat.setString(1, usuario.getNome());
-			stat.setString(2, usuario.getLogin());
-			stat.setString(3, usuario.getSenha());
-			stat.setBoolean(4, usuario.getAtivo());
-			stat.setInt(5, usuario.getPerfil().getValue());
-			stat.setInt(6, usuario.getId());
+		PreparedStatement stat = conn.prepareStatement(
+				"UPDATE public.usuario SET " +
+			    " nome = ?, " +
+			    " login = ?, " +
+			    " senha = ?, " +
+			    " ativo = ?, " +
+			    " perfil = ? " +
+				"WHERE " +
+			    " id = ? ");
+		stat.setString(1, usuario.getNome());
+		stat.setString(2, usuario.getLogin());
+		stat.setString(3, usuario.getSenha());
+		stat.setBoolean(4, usuario.getAtivo());
+		stat.setInt(5, usuario.getPerfil().getValue());
+		stat.setInt(6, usuario.getId());
 			
-			stat.execute();
-			return true;
+		stat.execute();
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 	@Override

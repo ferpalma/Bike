@@ -35,9 +35,8 @@ public class TelefoneDAO extends DAO<Telefone> {
 	}
 
 	@Override
-	public boolean update(Telefone entity) {
+	public void update(Telefone entity) throws SQLException {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
