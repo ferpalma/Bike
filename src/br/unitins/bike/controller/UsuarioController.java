@@ -41,6 +41,11 @@ public class UsuarioController implements Serializable {
 			DAO<Usuario> dao = new UsuarioDAO();
 			// faz a inclusao no banco de dados
 			try {
+//				String hashSenha = Util.hashSHA256(getUsuario().getSenha());
+//				getUsuario().setSenha(hashSenha);
+				
+				getUsuario().setSenha(Util.hashSHA256(getUsuario().getSenha()));
+				
 				dao.create(getUsuario());
 				dao.getConnection().commit();
 				Util.addMessageInfo("Inclusão realizada com sucesso.");
@@ -60,6 +65,8 @@ public class UsuarioController implements Serializable {
 			DAO<Usuario> dao = new UsuarioDAO();
 			// faz a alteracao no banco de dados
 			try {
+				// gerando um hash da senha
+				getUsuario().setSenha(Util.hashSHA256(getUsuario().getSenha()));
 				dao.update(getUsuario());
 				dao.getConnection().commit();
 				Util.addMessageInfo("Alteração realizada com sucesso.");
@@ -94,15 +101,15 @@ public class UsuarioController implements Serializable {
 	}
 
 	private boolean validarDados() {
-		if (getUsuario().getSenha().isBlank()) {
-			Util.addMessageWarn("O campo senha deve ser informado.");
-			return false;
-		}
-//		if (getUsuario().getSenha() == null || 
-//				getUsuario().getSenha().trim().equals("") ) {
-//			Util.addMessageError("O campo senha deve ser informado.");
+//		if (getUsuario().getSenha().isBlank()) {
+//			Util.addMessageWarn("O campo senha deve ser informado.");
 //			return false;
 //		}
+		if (getUsuario().getSenha() == null || 
+				getUsuario().getSenha().trim().equals("") ) {
+			Util.addMessageError("O campo senha deve ser informado.");
+			return false;
+		}
 		return true;
 	}
 	

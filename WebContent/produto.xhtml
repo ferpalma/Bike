@@ -50,9 +50,16 @@
 				action="#{produtoController.limpar()}">
 				<f:ajax render="formPrincipal" execute="@this" />
 			</h:commandButton>
+			
+			<h:button value="Voltar" onclick="window.history.back(); return false;"/>
 		</h:panelGrid>
 		
+		
 	</h:form>
-
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
 </h:body>
 </html>

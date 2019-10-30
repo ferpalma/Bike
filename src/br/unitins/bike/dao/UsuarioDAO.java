@@ -22,6 +22,50 @@ public class UsuarioDAO extends DAO<Usuario> {
 		// tchê papai ... cria uma nova conexao
 		super(null);
 	}
+	
+	public Usuario login(String login, String senha) {
+		
+		Connection conn = getConnection();
+		
+		try {
+			PreparedStatement stat = conn.prepareStatement(
+					"SELECT " +
+					"  id, " +
+					"  nome, " +
+					"  login, " +
+					"  senha, " +
+					"  ativo, " +
+					"  perfil " +					
+					"FROM " +
+					"  public.usuario " +
+					"WHERE login = ? AND senha = ? ");
+			
+			stat.setString(1, login);
+			stat.setString(2, senha);
+			
+			ResultSet rs = stat.executeQuery();
+			
+			Usuario usuario = null;
+			
+			if(rs.next()) {
+				usuario = new Usuario();
+				usuario.setTelefone(new Telefone());
+				usuario.setId(rs.getInt("id"));
+				usuario.setNome(rs.getString("nome"));
+				usuario.setLogin(rs.getString("login"));
+				usuario.setSenha(rs.getString("senha"));
+				usuario.setAtivo(rs.getBoolean("ativo"));
+				usuario.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
+			}
+			
+			return usuario;
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 
 	@Override
 	public void create(Usuario usuario) throws SQLException {

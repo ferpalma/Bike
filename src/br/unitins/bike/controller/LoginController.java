@@ -4,6 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 import br.unitins.bike.application.Util;
+import br.unitins.bike.dao.UsuarioDAO;
 import br.unitins.bike.model.Usuario;
 
 @Named
@@ -14,11 +15,13 @@ public class LoginController {
 
 	
 	public String logar() {
-		if (getUsuario().getLogin().equals("teste")
-				&& getUsuario().getSenha().equals("123")) {
-			System.out.println(getUsuario().getLogin());
-			System.out.println(getUsuario().getSenha());
-			return "hello.xhtml?faces-redirect=true";
+		UsuarioDAO dao = new UsuarioDAO();
+		String hashSenha = Util.hashSHA256(getUsuario().getSenha());
+		Usuario usuario = 
+			dao.login(getUsuario().getLogin(), hashSenha);
+		
+		if (usuario != null) {
+			return "usuario.xhtml?faces-redirect=true";
 		}
 		Util.addMessageError("Usuário ou Senha Inválido.");
 		return null;
