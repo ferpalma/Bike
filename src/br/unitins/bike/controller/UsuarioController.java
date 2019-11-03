@@ -90,13 +90,18 @@ public class UsuarioController implements Serializable {
 	public boolean excluir(Usuario usuario) {
 		DAO<Usuario> dao = new UsuarioDAO();
 		// faz a exclusao no banco de dados
-		if (dao.delete(usuario.getId())) {
+		try {
+			dao.delete(getUsuario().getId());
+			dao.getConnection().commit();
 			Util.addMessageInfo("Exclusão realizada com sucesso.");
-			listaUsuario = null;
 			return true;
-		} else {
-			Util.addMessageInfo("Erro ao excluir o Usuário no Banco de Dados.");
+		} catch (SQLException e) {
+			dao.rollbackConnection();
+			Util.addMessageInfo("Erro ao excluir o Produto no Banco de Dados.");
+			e.printStackTrace();
 			return false;
+		} finally {
+			dao.closeConnection();
 		}
 	}
 

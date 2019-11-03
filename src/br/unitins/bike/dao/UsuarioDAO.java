@@ -121,24 +121,22 @@ public class UsuarioDAO extends DAO<Usuario> {
 	}
 
 	@Override
-	public boolean delete(int id) {
+	public void delete(int id) throws SQLException {
 
 		Connection  conn = getConnection();
-		if (conn == null) 
-			return false;
+		// deletando o telefone (pq possui um relacionamento de fk)
+		// passando o conn para manter a mesma transacao
+		TelefoneDAO dao = new TelefoneDAO(conn);
+		// telefone tem um relecionamento 1 pra 1, ou seja, o id do usuario eh o mesmo do telefone.
+		dao.delete(id);
 		
-		try {
-			PreparedStatement stat = conn.prepareStatement(
-					"DELETE FROM public.usuario WHERE id = ?");
-			stat.setInt(1, id);
+		// deletando o usuario
+		PreparedStatement stat = conn.prepareStatement(
+				"DELETE FROM public.usuario WHERE id = ?");
+		stat.setInt(1, id);
+		
+		stat.execute();
 			
-			stat.execute();
-			return true;
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 	@Override
@@ -210,13 +208,19 @@ public class UsuarioDAO extends DAO<Usuario> {
 			
 			if(rs.next()) {
 				usuario = new Usuario();
-				usuario.setTelefone(new Telefone());
 				usuario.setId(rs.getInt("id"));
 				usuario.setNome(rs.getString("nome"));
 				usuario.setLogin(rs.getString("login"));
 				usuario.setSenha(rs.getString("senha"));
 				usuario.setAtivo(rs.getBoolean("ativo"));
 				usuario.setPerfil(Perfil.valueOf(rs.getInt("perfil")));
+				
+				TelefoneDAO dao = new TelefoneDAO(conn);
+				usuario.setTelefone(dao.findById(usuario.getId()));
+				// caso o retorno do telefone seja nulo, instanciar um telefone
+				if (usuario.getTelefone() == null)
+					usuario.setTelefone(new Telefone());
+				
 			}
 			
 			return usuario;

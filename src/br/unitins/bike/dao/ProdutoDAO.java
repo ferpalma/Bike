@@ -63,24 +63,15 @@ public class ProdutoDAO extends DAO<Produto> {
 	}
 
 	@Override
-	public boolean delete(int id) {
+	public void delete(int id) throws SQLException {
 
 		Connection  conn = getConnection();
-		if (conn == null) 
-			return false;
 		
-		try {
-			PreparedStatement stat = conn.prepareStatement(
-					"DELETE FROM public.produto WHERE id = ?");
-			stat.setInt(1, id);
-			
-			stat.execute();
-			return true;
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
+		PreparedStatement stat = conn.prepareStatement(
+				"DELETE FROM public.produto WHERE id = ?");
+		stat.setInt(1, id);
+		
+		stat.execute();
 	}
 
 	@Override
