@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 @Named
-@RequestScoped
-public class TesteController{
+@ApplicationScoped
+public class TesteController {
 	
+
 	private String nome = "";
 	
 	private List<String> lista = null;

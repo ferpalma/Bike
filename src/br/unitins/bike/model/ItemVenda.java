@@ -3,7 +3,7 @@ package br.unitins.bike.model;
 public class ItemVenda {
 	private Integer id;
 	private Produto produto;
-	private Double valor;
+	private Float valor;
 	private Venda venda;
 
 	public Integer getId() {
@@ -14,11 +14,11 @@ public class ItemVenda {
 		this.id = id;
 	}
 
-	public Double getValor() {
+	public Float getValor() {
 		return valor;
 	}
 
-	public void setValor(Double valor) {
+	public void setValor(Float valor) {
 		this.valor = valor;
 	}
 

@@ -3,6 +3,7 @@ package br.unitins.bike.controller;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
+import br.unitins.bike.application.Session;
 import br.unitins.bike.application.Util;
 import br.unitins.bike.dao.UsuarioDAO;
 import br.unitins.bike.model.Usuario;
@@ -21,7 +22,9 @@ public class LoginController {
 			dao.login(getUsuario().getLogin(), hashSenha);
 		
 		if (usuario != null) {
-			return "usuario.xhtml?faces-redirect=true";
+			// armazenando um usuario na sessao
+			Session.getInstance().setAttribute("usuarioLogado", usuario);
+			return "template.xhtml?faces-redirect=true";
 		}
 		Util.addMessageError("Usuário ou Senha Inválido.");
 		return null;
