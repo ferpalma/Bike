@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+	<title>Testes</title>
+</h:head>
+<h:body>
+	<h1>Tela de Testes</h1>
+	<h:form>
+	<h:outputLabel>Nome:</h:outputLabel>
+	<h:inputText value="#{testeController.nome}"/>
+		<h:commandButton value="salvar" actionListener="#{testeController.add}"/>
+	</h:form>
+	<h:dataTable value="#{testeController.lista}" var="obj">
+				<h:column>
+					<f:facet name="header">Nome</f:facet>
+					<h:outputLabel value="#{obj}" />
+				</h:column>
+				
+			</h:dataTable>
+	
+</h:body>
+</html>
