@@ -1,6 +1,8 @@
 package br.unitins.bike.controller;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import br.unitins.bike.application.Session;
+import br.unitins.bike.application.Util;
+import br.unitins.bike.dao.VendaDAO;
 import br.unitins.bike.model.ItemVenda;
+import br.unitins.bike.model.Usuario;
 import br.unitins.bike.model.Venda;
 
 @Named
@@ -36,10 +41,36 @@ public class CarrinhoController implements Serializable{
 	}
 	
 	public void remover(int idProduto) {
-		
+		// alunos vao implementar
 	}
 	
 	public void finalizar() {
+		Usuario usuario = (Usuario)Session.getInstance().getAttribute("usuarioLogado");
+		if (usuario == null) {
+			Util.addMessageWarn("Eh preciso estar logado para realizar uma venda. Faca o Login!!");
+			return;
+		}
+		// montar a venda
+		Venda venda = new Venda();
+		venda.setData(LocalDate.now());
+		venda.setUsuario(usuario);
+		List<ItemVenda> carrinho = (ArrayList<ItemVenda>) 
+				Session.getInstance().getAttribute("carrinho");
+		venda.setListaItemVenda(carrinho);
+		// salvar no banco
+		VendaDAO dao = new VendaDAO();
+		try {
+			dao.create(venda);
+			dao.getConnection().commit();
+			Util.addMessageInfo("Venda realizada com sucesso.");
+			// limpando o carrinho
+			Session.getInstance().setAttribute("carrinho", null);
+		} catch (SQLException e) {
+			dao.rollbackConnection();
+			dao.closeConnection();
+			Util.addMessageInfo("Erro ao finalizar a Venda.");
+			e.printStackTrace();
+		}
 		
 	}
 
